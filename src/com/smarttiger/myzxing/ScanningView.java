@@ -12,6 +12,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
@@ -24,9 +25,10 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-public class ScanningView extends Activity implements Callback {
+public class ScanningView extends Activity implements Callback, OnClickListener{
 
 	private CaptureActivityHandler handler;
 	private ViewfinderView viewfinderView;
@@ -39,6 +41,9 @@ public class ScanningView extends Activity implements Callback {
 	private boolean playBeep;
 	private static final float BEEP_VOLUME = 0.10f;
 	private boolean vibrate;
+	
+	private TextView scanningText;
+	private TextView buildText;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -46,10 +51,18 @@ public class ScanningView extends Activity implements Callback {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.scanningview);
 		CameraManager.init(this);
+		scanningText = (TextView) findViewById(R.id.scanning_text);
+		buildText = (TextView) findViewById(R.id.build_text);
+		scanningText.setOnClickListener(this);
+		buildText.setOnClickListener(this);
 		viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
 		txtResult = (TextView) findViewById(R.id.txtResult);
 		hasSurface = false;
 		inactivityTimer = new InactivityTimer(this);
+		
+
+//		Intent intent = new Intent(this, BuildView.class);
+//		startActivity(intent);
 	}
 
 	@Override
@@ -188,5 +201,17 @@ public class ScanningView extends Activity implements Callback {
 			mediaPlayer.seekTo(0);
 		}
 	};
+
+	@Override
+	public void onClick(View view) {
+		// TODO Auto-generated method stub
+		int id = view.getId();
+		if(id == R.id.scanning_text) {
+			
+		} else if (id == R.id.build_text) {
+			Intent intent = new Intent(this, BuildView.class);
+			startActivity(intent);
+		}
+	}
 
 }
