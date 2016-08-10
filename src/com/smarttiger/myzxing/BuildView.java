@@ -1,5 +1,9 @@
 package com.smarttiger.myzxing;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -15,10 +19,13 @@ import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,6 +59,16 @@ public class BuildView extends Activity implements OnClickListener {
 		buildText.setOnClickListener(this);
 		editText = (EditText) findViewById(R.id.edit_text);
 		imageView = (ImageView) findViewById(R.id.image_view);
+		imageView.setOnLongClickListener(new OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				// TODO Auto-generated method stub
+				Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+				saveBitmap(bitmap);
+				return false;
+			}
+		});
 
 		paste();
 		buildQrCode();
@@ -116,8 +133,8 @@ public class BuildView extends Activity implements OnClickListener {
 			{
 				if(resMatrix.get(x, y))
 					pixels[y * width + x] = BLACK;
-//				else
-//					pixels[y * width + x] = WHITE;
+				else //可以不填白色，就是透明了，如果在黑色背景下就看不到了。
+					pixels[y * width + x] = WHITE;
 			}
 		}
 
@@ -156,4 +173,34 @@ public class BuildView extends Activity implements OnClickListener {
 //		data = ClipData.newPlainText("", "");
 //		myClipboard.setPrimaryClip(data);
 	}
+	
+
+	private  String HEAD_DIR = Environment
+			.getExternalStorageDirectory().getAbsolutePath()
+			+ "/MyZxing/";
+	private void saveBitmap(Bitmap bm) {
+		File headFile = new File(HEAD_DIR);
+		if(!headFile.exists())
+			headFile.mkdir();
+		
+		File f = new File(HEAD_DIR, "/myQRcode.png");
+		if (f.exists()) {
+			f.delete();
+		}
+		try {
+			f.createNewFile();
+			FileOutputStream out = new FileOutputStream(f);
+			bm.compress(Bitmap.CompressFormat.PNG, 90, out);
+			out.flush();
+			out.close();
+			Toast.makeText(this, "二维码已保存到"+f.getPath(), 0).show();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }
