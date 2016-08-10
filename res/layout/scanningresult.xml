@@ -12,15 +12,16 @@
         android:background="#333333"
         android:gravity="center_vertical" >
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+        <Button
+            android:layout_width="fill_parent"
+	        android:layout_height="50dp"
+	        android:background="@drawable/btn_rescanning"
+            android:layout_alignParentBottom="true"
+            android:layout_centerVertical="true"
+            android:onClick="onCopyClipResult"
             android:text="扫描结果"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" >
-        </TextView>
+            android:textSize="16sp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -53,6 +54,7 @@
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:layout_margin="15dp"
+		        android:textIsSelectable="true"
 		        android:text="扫描结果"
 		        android:padding="20dp"
 		        android:autoLink="web"/>
@@ -68,8 +70,7 @@
             android:onClick="onBackToMain"
             android:text="重新扫描"
             android:textColor="#FFFFFF"
-            android:textSize="16sp"     >
-        </Button>
+            android:textSize="16sp" />
         
     </RelativeLayout>
 

@@ -60,9 +60,6 @@ public class ScanningView extends Activity implements Callback, OnClickListener{
 		hasSurface = false;
 		inactivityTimer = new InactivityTimer(this);
 		
-
-//		Intent intent = new Intent(this, BuildView.class);
-//		startActivity(intent);
 	}
 
 	@Override

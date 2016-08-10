@@ -10,6 +10,8 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -25,7 +27,7 @@ import android.widget.Toast;
 public class BuildView extends Activity implements OnClickListener {
 
     private static final int BLACK = 0xFF000000;
-    private static final int WHITE = 0xFF000000;
+    private static final int WHITE = 0xFFffffff;
     
 	private TextView scanningText;
 	private TextView buildText;
@@ -33,11 +35,16 @@ public class BuildView extends Activity implements OnClickListener {
 	private ImageView imageView;
 	private String text = "123456";
 	
+	private ClipboardManager myClipboard;//剪贴板
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.buildview);
+		
+
+		myClipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
 		
 		scanningText = (TextView) findViewById(R.id.scanning_text);
 		buildText = (TextView) findViewById(R.id.build_text);
@@ -45,8 +52,10 @@ public class BuildView extends Activity implements OnClickListener {
 		buildText.setOnClickListener(this);
 		editText = (EditText) findViewById(R.id.edit_text);
 		imageView = (ImageView) findViewById(R.id.image_view);
-		
+
+		paste();
 		buildQrCode();
+		
 	}
 
 	@Override
@@ -131,4 +140,20 @@ public class BuildView extends Activity implements OnClickListener {
         }
         return null;
     }
+	
+	
+	//直接粘贴剪贴板内容
+	private void paste(){
+		ClipData data = myClipboard.getPrimaryClip();
+		if(data == null)
+			return;
+		ClipData.Item item = data.getItemAt(0);
+		text = item.getText().toString();
+		editText.setText(text);
+		
+		
+		//清空剪贴板
+//		data = ClipData.newPlainText("", "");
+//		myClipboard.setPrimaryClip(data);
+	}
 }

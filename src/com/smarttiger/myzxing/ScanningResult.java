@@ -8,22 +8,30 @@ import com.smarttiger.myzxing.R;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ScanningResult extends Activity {
 
+
+	private ClipboardManager myClipboard;
+	private String result;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.scanningresult);
+        myClipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
         String intentS=getIntent().getStringExtra("code");
         System.out.println("intentS==="+intentS);
         if(intentS==null)
         	return;
-        String result = autoDecode(intentS);
+        result = autoDecode(intentS);
 //        try {
         	
 //        	result = result + "原字符串====\n" + intentS ;
@@ -65,6 +73,15 @@ public class ScanningResult extends Activity {
     	finish();
     }
     
+    //将结果复制到剪贴板
+    public void onCopyClipResult(View view) {
+
+        ClipData data = ClipData.newPlainText("result", result);
+        myClipboard.setPrimaryClip(data);
+    	
+    	Toast.makeText(this, "结果已复制到剪贴板", 0).show();
+    }
+    
     //自动判断是用什么格式来解码显示字符串。
     private String autoDecode(String intentS)
     {  	
@@ -92,7 +109,6 @@ public class ScanningResult extends Activity {
 		}			
 		return result;	
     }
-  
   
 }
 
