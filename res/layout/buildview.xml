@@ -17,6 +17,19 @@
             android:gravity="center"
             android:text="生成二维码"
             android:textSize="16sp" />
+        
+        <Button
+            android:id="@+id/format_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:padding="8dp"
+            android:background="@drawable/x_bottom_tool_button_background"
+            android:text="QR Code"
+            android:textColor="#ffffff" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -54,6 +67,12 @@
 				android:layout_width="160dp"
 				android:layout_height="160dp"
 				android:scaleType="centerCrop"/>
+			
+			<TextView 
+				android:id="@+id/log_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:visibility="gone"/>
         </LinearLayout>
 	
     </RelativeLayout>

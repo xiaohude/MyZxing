@@ -8,4 +8,8 @@
         
     <color name="btn_rescanning_pressed">#191919</color>
     <color name="btn_rescanning_default">#333333</color>
+    
+    
+    <color name="x_bottom_tool_button_background">#17191e</color>
+    <color name="x_bottom_tool_button_background_pressed">#111316</color>
 </resources>

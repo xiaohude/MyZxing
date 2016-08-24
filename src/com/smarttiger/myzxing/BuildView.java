@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -26,6 +28,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,9 +41,15 @@ public class BuildView extends Activity implements OnClickListener {
     
 	private TextView scanningText;
 	private TextView buildText;
+	private Button formatButton;
+	private String format;
 	private EditText editText;
 	private ImageView imageView;
-	private String text = "123456";
+	private String text = "";
+	private TextView logText;
+	
+	private BarcodeFormat[] formats = {BarcodeFormat.QR_CODE, BarcodeFormat.PDF_417, BarcodeFormat.CODE_128};
+	private int formatId = 0;
 	
 	private ClipboardManager myClipboard;//剪贴板
 	
@@ -55,9 +64,12 @@ public class BuildView extends Activity implements OnClickListener {
 		
 		scanningText = (TextView) findViewById(R.id.scanning_text);
 		buildText = (TextView) findViewById(R.id.build_text);
+		formatButton = (Button) findViewById(R.id.format_button);
 		scanningText.setOnClickListener(this);
 		buildText.setOnClickListener(this);
+		formatButton.setOnClickListener(this);
 		editText = (EditText) findViewById(R.id.edit_text);
+		logText = (TextView) findViewById(R.id.log_text);
 		imageView = (ImageView) findViewById(R.id.image_view);
 		imageView.setOnLongClickListener(new OnLongClickListener() {
 			
@@ -85,25 +97,42 @@ public class BuildView extends Activity implements OnClickListener {
 		} else if (id == R.id.build_text) {
 			text = editText.getText().toString();
 			buildQrCode();
+		} else if (id == R.id.format_button) {
+//			text = editText.getText().toString();
+//			buildQrCode();
+			
+			formatId = (formatId+1) % 3;
+			formatButton.setText(formats[formatId].toString());
 		}
 	}
 	
 	
 	private void buildQrCode () {
 		try {
+
+			if(isCODE_128HasCN())
+				return;
 			Bitmap mQrBitmap = encodeAsBitmap();
 			if(mQrBitmap != null){
 				imageView.setImageBitmap(mQrBitmap);
+				logText.setVisibility(View.GONE);
+				imageView.setVisibility(View.VISIBLE);
+				if(isCODE_128HasCN())
+					System.out.println("-----------mQrBitmap == null----");
 			}
+			else
+				if(isCODE_128HasCN())
+					System.out.println("-----------mQrBitmap == null----");
 		} catch (WriterException e) {
 			// TODO Auto-generated catch block
+			System.out.println("---------------123456----------------");
 			e.printStackTrace();
 		}
 	}
 
 	private Bitmap encodeAsBitmap() throws WriterException {
         if (TextUtils.isEmpty(text)) {
-        	Toast.makeText(this, "字符串为空！", 0).show();
+        	showLog("字符串为空");
             return null;
         }
         BarcodeFormat format = BarcodeFormat.valueOf(BarcodeFormat.QR_CODE.toString());
@@ -117,10 +146,11 @@ public class BuildView extends Activity implements OnClickListener {
         BitMatrix result;
         try {
         	System.out.println("text========="+text);
-            result = new MultiFormatWriter().encode(text, format, mScaleImageHeight,
+            result = new MultiFormatWriter().encode(text, formats[formatId], mScaleImageHeight,
             		mScaleImageHeight,hints);
         	System.out.println("result========="+result);
         } catch (IllegalArgumentException iae) {
+        	isCODE_128HasCN();
             return null;
         }
         
@@ -203,4 +233,25 @@ public class BuildView extends Activity implements OnClickListener {
 		}
 	}
 	
+	
+	private void showLog(String text) {
+		logText.setVisibility(View.VISIBLE);
+		imageView.setVisibility(View.GONE);
+		logText.setText(text);
+	}
+	
+	//已选条形码清空下不能选择中文字符
+	private boolean isCODE_128HasCN() {
+		System.out.println("------------isCODE_128HasCN000-");
+		if(formatId == 2) {
+			Pattern pattern = Pattern.compile("[\u4e00-\u9fa5]+");
+			Matcher matcher = pattern.matcher(text);
+			if(matcher.matches()) {
+				showLog("中文无法生成条形码");
+				return true;
+			}
+		}
+		return false;
+		
+	}
 }
