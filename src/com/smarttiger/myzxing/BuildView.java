@@ -208,6 +208,7 @@ public class BuildView extends Activity implements OnClickListener {
 	private  String HEAD_DIR = Environment
 			.getExternalStorageDirectory().getAbsolutePath()
 			+ "/MyZxing/";
+	//记得加权限
 	private void saveBitmap(Bitmap bm) {
 		File headFile = new File(HEAD_DIR);
 		if(!headFile.exists())
