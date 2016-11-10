@@ -50,7 +50,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_below="@id/edit_text"
 	        android:layout_centerHorizontal="true"
-	        android:text="点击生成二维码"
+	        android:text="↑点击生成二维码↑"
 	        android:textSize="14.0sp" />
 		
 		<LinearLayout 
